@@ -9,6 +9,8 @@ from .models import Product, CartItem, Order
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
+from django.urls import path
+from django.contrib.auth import views as auth_views  # ใช้สำหรับ login/logout views
 
 # ฟังก์ชันแสดงรายการสินค้า
 def product_list(request):
@@ -151,3 +153,23 @@ def register(request):
     else:
         form = UserCreationForm()
     return render(request, 'users/register.html', {'form': form})
+
+# ฟังก์ชันเข้าสู่ระบบ
+def login_user(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('equipment_list')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'accounts/login.html', {'form': form})
+
+# ฟังก์ชันออกจากระบบ
+def logout_user(request):
+    logout(request)
+    return redirect('login')

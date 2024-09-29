@@ -3,6 +3,7 @@ from django.urls import path
 from . import views  # Import views from products app
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
+from django.contrib.auth import views as auth_views  # ใช้สำหรับ login/logout views
 
 urlpatterns = [
     path('products/', views.product_list, name='product_list'),  # Display product list
@@ -19,5 +20,6 @@ urlpatterns = [
     path('order_confirmation/', views.order_confirmation, name='order_confirmation'),
     path('login/', LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', LogoutView.as_view(next_page='login'), name='logout'),  # ตั้งค่า redirect หลัง logout
+    #path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     
 ]
