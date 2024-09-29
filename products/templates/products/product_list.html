@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}รายการสินค้าเบเกอรี่{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">รายการสินค้าเบเกอรี่</h1>
+
+    <div class="overflow-x-auto">
+        <!-- Table container -->
+        <table class="min-w-full table-auto bg-white shadow-lg rounded-lg overflow-hidden">
+            <thead class="bg-gradient-to-r from-gray-800 to-gray-600 text-white">
+                <tr>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">ชื่อสินค้า</th>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">ประเภท</th>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">ราคา</th>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">จำนวนคงเหลือ</th>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">รูปภาพสินค้า</th>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">คำอธิบายสินค้า</th>
+                    <th class="w-1/6 py-4 px-6 uppercase font-semibold text-sm text-center">การดำเนินการ</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-700">
+                {% for product in products %}
+                <tr class="border-b hover:bg-gray-50 transition duration-200 ease-in-out">
+                    <td class="py-4 px-6 text-center">{{ product.name }}</td>
+                    <td class="py-4 px-6 text-center">{{ product.category }}</td>
+                    <td class="py-4 px-6 text-center">{{ product.price }}</td>
+                    <td class="py-4 px-6 text-center">{{ product.stock }}</td>
+                    <td class="py-4 px-6 text-center">
+                        {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-16 w-16 object-cover rounded-lg shadow-md mx-auto">
+                        {% else %}
+                        <span class="text-gray-500 italic">ไม่มีรูปภาพ</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 px-6 text-center">{{ product.description }}</td>
+                    <td class="py-4 px-6 text-center space-x-2">
+                        <a href="{% url 'edit_product' product.id %}" class="text-blue-500 hover:text-blue-700 font-bold">แก้ไข</a>
+                        <a href="{% url 'delete_product' product.id %}" class="text-red-500 hover:text-red-700 font-bold" onclick="return confirm('คุณแน่ใจหรือไม่ที่จะลบสินค้านี้?');">ลบ</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-center mt-8">
+        <a href="{% url 'add_product' %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out">
+            เพิ่มสินค้า
+        </a>
+    </div>
+</div>
+{% endblock %}
