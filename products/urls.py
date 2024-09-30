@@ -2,8 +2,9 @@
 from django.urls import path
 from . import views  # Import views from products app
 from django.contrib.auth.views import LoginView, LogoutView
-from django.urls import path
+#from django.urls import path
 from django.contrib.auth import views as auth_views  # ใช้สำหรับ login/logout views
+
 
 urlpatterns = [
     path('products/', views.product_list, name='product_list'),  # Display product list
@@ -13,13 +14,15 @@ urlpatterns = [
     path('orders/', views.order_list, name='order_list'),  # Order list
     path('orders/create/', views.create_order, name='create_order'),  # Create new order
     path('sales_report/', views.sales_report, name='sales_report'),  # Sales report
-    path('', views.home, name='home'), 
     path('add_to_cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
-    path('remove_from_cart/<int:cart_item_id>/', views.remove_from_cart, name='remove_from_cart'),
-    path('checkout/', views.checkout, name='checkout'),
-    path('order_confirmation/', views.order_confirmation, name='order_confirmation'),
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),  # ตั้งค่า redirect หลัง logout
-    #path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
-    
+    path('remove_from_cart/<int:cart_item_id>/', views.remove_from_cart, name='remove_from_cart'),  # Remove from cart
+    path('checkout/', views.checkout, name='checkout'),  # Checkout
+    path('order_confirmation/', views.order_confirmation, name='order_confirmation'),  # Order confirmation
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),  # Login
+    path('logout/', LogoutView.as_view(next_page='login'), name='logout'),  # Logout
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),  # Login account
+    path('register/', views.register, name='register'),  # Register
+    path('productscart/', views.productscart, name='productscart'),  # Product cart
+    path('cart/', views.cart_detail, name='cart_detail'),  # Cart details
+    path('', views.home, name='home'),  # Home page
 ]

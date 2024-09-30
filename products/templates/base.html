@@ -6,20 +6,26 @@
     <title>{% block title %}ระบบจัดการร้านเบเกอรี่{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-gray-100">
+
+    {% if not request.path == '/login/' %}
     <!-- ส่วนหัว -->
-    <header class="bg-blue-500 text-white py-4">
+    <header class="bg-yellow-600 text-white py-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold">ระบบจัดการร้านเบเกอรี่</h1>
-            <nav>
-                <a href="{% url 'home' %}" class="px-4 py-2 hover:bg-blue-700 rounded">หน้าแรก</a>
-                <a href="{% url 'product_list' %}" class="px-4 py-2 hover:bg-blue-700 rounded">รายการสินค้า</a>
-                <a href="{% url 'order_list' %}" class="px-4 py-2 hover:bg-blue-700 rounded">รายการคำสั่งซื้อ</a>
-                <a href="{% url 'sales_report' %}" class="px-4 py-2 hover:bg-blue-700 rounded">รายงานยอดขาย</a>
-                <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+            <nav class="flex space-x-4">
+                <a href="{% url 'home' %}" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">หน้าแรก</a>
+                <a href="{% url 'productscart' %}" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">สินค้า</a>
+                <a href="{% url 'product_list' %}" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">รายการสินค้า</a>
+                <a href="{% url 'order_list' %}" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">รายการคำสั่งซื้อ</a>
+                <a href="{% url 'sales_report' %}" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">รายงานยอดขาย</a>
+                <a href="http://127.0.0.1:8000/products/products/add/" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">เพิ่มสินค้า</a>
+                <a href="{% url 'login' %}" class="px-4 py-2 hover:bg-yellow-700 rounded-lg transition duration-300 ease-in-out">เข้าสู่ระบบ</a>
+
             </nav>
         </div>
     </header>
+    {% endif %}
 
     <!-- เนื้อหาหลัก -->
     <div class="container mx-auto mt-10">
@@ -27,5 +33,6 @@
         <!-- เนื้อหาของแต่ละหน้า -->
         {% endblock %}
     </div>
+
 </body>
 </html>

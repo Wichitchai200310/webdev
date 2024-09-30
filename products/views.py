@@ -11,6 +11,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.urls import path
 from django.contrib.auth import views as auth_views  # ใช้สำหรับ login/logout views
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.http import require_POST
+
 
 # ฟังก์ชันแสดงรายการสินค้า
 def product_list(request):
@@ -30,10 +33,11 @@ def add_product(request):
 # View to delete a product
 def delete_product(request, id):
     product = get_object_or_404(Product, id=id)
-    if request.method == 'POST':  # Confirm deletion
+    if request.method == 'DELETE':  # Confirm deletion
         product.delete()
         return redirect('product_list')
     return render(request, 'products/product_confirm_delete.html', {'product': product})
+
 # View to edit a product
 def edit_product(request, id):
     product = get_object_or_404(Product, id=id)
@@ -64,18 +68,14 @@ def create_order(request):
 from django.shortcuts import render
 
 def home(request):
-    cart_items = CartItem.objects.filter(user=request.user)  # ดึงข้อมูล cart
+    '''cart_items = CartItem.objects.filter(user=request.user)  # ดึงข้อมูล cart
     total_price = 0
 
     for item in cart_items:
         item.total = item.product.price * item.quantity  # คำนวณราคาสินค้าแต่ละรายการ
-        total_price += item.total  # เพิ่มไปยังราคารวมทั้งหมด
+        total_price += item.total  # เพิ่มไปยังราคารวมทั้งหมด'''
 
-    return render(request, 'products/home.html', {'cart_items': cart_items, 'total_price': total_price})
-
-from django.shortcuts import render
-
-from django.shortcuts import render
+    return render(request, 'products/home.html')
 
 def sales_report(request):
     # ตัวอย่างข้อมูลยอดขาย
@@ -86,37 +86,77 @@ def sales_report(request):
         'labels': labels,
         'data': data,
     })
-# แสดงสินค้าทั้งหมดและตะกร้าสินค้า
-@login_required
-def home(request):
-    products = Product.objects.all()
-    cart_items = CartItem.objects.filter(user=request.user)
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
-    return render(request, 'home.html', {
-        'products': products,
-        'cart': cart_items,
-        'total_price': total_price
-    })
+
 
 # เพิ่มสินค้าลงในตะกร้า
-@login_required
+#@login_required
+@require_POST
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
-    if not created:
-        cart_item.quantity += 1
-    cart_item.save()
-    return redirect('home')
 
-# ลบสินค้าจากตะกร้า
-@login_required
+    # ดึงข้อมูลตะกร้าจาก session หรือถ้ายังไม่มีให้สร้างเป็น list เปล่า
+    cart = request.session.get('cart', [])
+
+    # ตรวจสอบว่าสินค้าตัวนี้อยู่ในตะกร้าแล้วหรือยัง
+    for item in cart:
+        if item['product_id'] == product.id:
+            item['quantity'] += 1
+            break
+    else:
+        # ถ้าไม่มีในตะกร้า ให้เพิ่มสินค้าใหม่
+        cart.append({
+            'product_id': product.id,
+            'name': product.name,
+            'price': str(product.price),  # เก็บเป็น string เพราะ session เก็บเฉพาะข้อมูลที่ serialize ได้
+            'quantity': 1,
+            'image_url': product.image.url if product.image else '/static/images/default-image.jpg'
+        })
+
+    # บันทึกตะกร้ากลับเข้าไปใน session
+    request.session['cart'] = cart
+
+    return redirect('cart_detail')
+
+
+
+
+
+def cart_detail(request):
+    # ดึงข้อมูลตะกร้าจาก session ถ้าไม่มีให้ใช้ list ว่าง
+    cart_items = request.session.get('cart', [])
+    
+    # คำนวณยอดรวมทั้งหมดของสินค้าในตะกร้า
+    total_price = sum(float(item['price']) * item['quantity'] for item in cart_items)
+
+    context = {
+        'cart_items': cart_items,
+        'total_price': total_price,
+    }
+
+    return render(request, 'cart/cart_detail.html', context)
+
+def remove_from_cart(request, product_id):
+    cart = request.session.get('cart', [])
+    
+    # ลบสินค้าจากตะกร้า
+    cart = [item for item in cart if item['product_id'] != product_id]
+
+    # บันทึกตะกร้าที่อัปเดตกลับเข้า session
+    request.session['cart'] = cart
+
+    return redirect('cart_detail')
+
+
+
+
+# #@login_required
 def remove_from_cart(request, cart_item_id):
     cart_item = get_object_or_404(CartItem, id=cart_item_id)
     cart_item.delete()
     return redirect('home')
 
-# เช็คเอาท์
-@login_required
+# # เช็คเอาท์
+# #@login_required
 def checkout(request):
     cart_items = CartItem.objects.filter(user=request.user)
     total_price = sum(item.product.price * item.quantity for item in cart_items)
@@ -138,10 +178,11 @@ def checkout(request):
 
     return render(request, 'checkout.html', {'total_price': total_price})
 
-# ยืนยันคำสั่งซื้อ
-@login_required
+# # ยืนยันคำสั่งซื้อ
+# #@login_required
 def order_confirmation(request):
     return render(request, 'order_confirmation.html')
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -152,24 +193,84 @@ def register(request):
             return redirect('login')  # หลังจากลงทะเบียนแล้วจะพาไปหน้า login
     else:
         form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'producrt/home.html', {'form': form})
 
-# ฟังก์ชันเข้าสู่ระบบ
-def login_user(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('equipment_list')
+# # ฟังก์ชันสมัครสมาชิก
+# def register(request):
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Account created successfully!')
+#             return redirect('login')
+#     else:
+#         form = UserCreationForm()
+#     return render(request, 'register.html', {'form': form})
+
+# # ฟังก์ชันเข้าสู่ระบบ
+# def login_view(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request, data=request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password')
+#             user = authenticate(username=username, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 messages.info(request, f"You are now logged in as {username}.")
+#                 return redirect('home')
+#             else:
+#                 messages.error(request, "Invalid username or password.")
+#         else:
+#             messages.error(request, "Invalid username or password.")
+#     else:
+#         form = AuthenticationForm()
+#     return render(request, 'login.html', {'form': form})
+
+# # ฟังก์ชันออกจากระบบ
+# def logout_view(request):
+#     logout(request)
+#     messages.info(request, "You have successfully logged out.")
+#     return redirect('login')
+
+# #home
+# from django.shortcuts import render
+def home(request):
+    products = Product.objects.all()  # Fetch all Product objects from the database
+    return render(request, 'products/home.html', {'products': products})  # Pass the products to the template
+
+def productscart(request):
+    products = Product.objects.all()
+    return render(request, 'products/productscart.html', {'products': products})
+
+@require_POST
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    # ดึงข้อมูลตะกร้าจาก session หรือถ้ายังไม่มีให้สร้างเป็น list เปล่า
+    cart = request.session.get('cart', [])
+
+    # ตรวจสอบว่าสินค้าตัวนี้อยู่ในตะกร้าแล้วหรือยัง
+    for item in cart:
+        if item['product_id'] == product.id:
+            item['quantity'] += 1
+            break
     else:
-        form = AuthenticationForm()
-    return render(request, 'accounts/login.html', {'form': form})
+        # ถ้าไม่มีในตะกร้า ให้เพิ่มสินค้าใหม่
+        cart.append({
+            'product_id': product.id,
+            'name': product.name,
+            'price': str(product.price),
+            'quantity': 1,
+            'image_url': product.image.url if product.image else '/static/images/default-image.jpg'
+        })
 
-# ฟังก์ชันออกจากระบบ
-def logout_user(request):
-    logout(request)
-    return redirect('login')
+    # บันทึกตะกร้ากลับเข้าไปใน session
+    request.session['cart'] = cart
+
+    return redirect('cart_detail')
+
+def clear_cart(request):
+    # ล้างข้อมูลตะกร้าใน session
+    request.session['cart'] = []
+    return redirect('productscart')

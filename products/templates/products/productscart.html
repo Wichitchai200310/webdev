@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}รายการสินค้าเบเกอรี่{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">รายการสินค้าเบเกอรี่</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- วนลูปแสดงสินค้าทุกชิ้น -->
+        {% for product in products %}
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="h-48 bg-gray-200 flex items-center justify-center">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full object-cover">
+                {% else %}
+                <span class="text-gray-500 italic">ไม่มีรูปภาพ</span>
+                {% endif %}
+            </div>
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-2">{{ product.name }}</h3>
+                <p class="text-gray-600 mb-4">{{ product.description }}</p>
+                <p class="text-gray-900 font-bold mb-2">฿{{ product.price }}</p>
+                <p class="text-gray-500 mb-4">จำนวนคงเหลือ: {{ product.stock }}</p>
+                <div class="flex justify-between items-center">
+                    <a href="{% url 'edit_product' product.id %}"
+                        class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300">แก้ไข</a>
+                    <a href="{% url 'delete_product' product.id %}"
+                        class="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-all duration-300"
+                        onclick="return confirm('คุณแน่ใจหรือไม่ที่จะลบสินค้านี้?');">ลบ</a>
+                </div>
+                <!-- ปุ่ม Add to Cart -->
+                <button onclick="addToCart('{{ product.id }}')"
+                    class="bg-green-500 text-white w-full mt-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-300">Add
+                    to Cart</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="flex justify-center mt-8">
+        <a href="{% url 'add_product' %}"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out">
+            เพิ่มสินค้า
+        </a>
+    </div>
+</div>
+
+<!-- Script สำหรับจัดการการเพิ่มสินค้าในตะกร้า -->
+<script>
+    function addToCart(productId) {
+        fetch(`/add_to_cart/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // ตรวจสอบว่า CSRF token ถูกส่งไปด้วย
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('เพิ่มสินค้าลงในตะกร้าเรียบร้อยแล้ว!');
+                } else {
+                    alert('เกิดข้อผิดพลาดในการเพิ่มสินค้า');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์');
+            });
+    }
+</script>
+{% endblock %}

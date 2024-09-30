@@ -1,71 +1,67 @@
-<!-- templates/home.html -->
-
 {% extends 'base.html' %}
 
-{% block title %}หน้าแรก - ระบบจัดการเบเกอรี่{% endblock %}
+{% load static %}
+
+{% block title %}Welcome to the Bakery{% endblock %}
 
 {% block content %}
-<div class="container mx-auto mt-10">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">สินค้าเบเกอรี่</h1>
-
-    <!-- Grid container for product cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {% for product in products %}
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <!-- Product Image -->
-            <div class="h-48 bg-gray-200">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-cover">
-                {% else %}
-                <div class="h-full w-full flex items-center justify-center">
-                    <span class="text-gray-500 italic">ไม่มีรูปภาพ</span>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- Product Details -->
-            <div class="p-6">
-                <h2 class="text-xl font-bold text-gray-800">{{ product.name }}</h2>
-                <p class="mt-2 text-gray-600">{{ product.description }}</p>
-                <p class="mt-4 text-lg font-semibold text-green-600">฿{{ product.price }}</p>
-
-                <!-- Add to Cart Button -->
-                <form method="POST" action="{% url 'add_to_cart' product.id %}" class="mt-4">
-                    {% csrf_token %}
-                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out">
-                        เพิ่มลงตะกร้า
-                    </button>
-                </form>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- Cart Section -->
-    <div class="mt-10">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">ตะกร้าสินค้า</h2>
-        <ul class="bg-white shadow-md rounded-lg p-6">
-            {% for item in cart %}
-            <li class="flex justify-between items-center mb-4 border-b pb-2">
-                <span>{{ item.product.name }} ({{ item.quantity }})</span>
-                <span>฿{{ item.product.price * item.quantity }}</span>
-                <form method="POST" action="{% url 'remove_from_cart' item.id %}">
-                    {% csrf_token %}
-                    <button class="text-red-500 hover:text-red-700">ลบ</button>
-                </form>
-            </li>
-            {% empty %}
-            <p class="text-gray-500">ไม่มีสินค้าที่เพิ่มในตะกร้า</p>
-            {% endfor %}
-        </ul>
-
-        <!-- Total and Checkout -->
-        <div class="mt-6">
-            <p class="text-lg font-semibold">รวมทั้งสิ้น: ฿{{ total_price }}</p>
-            <a href="{% url 'checkout' %}" class="mt-4 inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out">
-                ชำระเงิน
-            </a>
+    <div class="hero-section bg-yellow-50 py-12">
+        <div class="container mx-auto text-center">
+            <h1 class="text-5xl font-bold text-yellow-900 mb-8">Welcome to the Bakery!</h1>
+            <img src="{% static 'images/Bakeryu.jpg' %}" alt="Bakery Image" class="mx-auto rounded-lg shadow-lg w-3/4 md:w-1/2">
+            <a href="#" class="mt-8 inline-block bg-yellow-600 text-white text-lg px-6 py-3 rounded-full hover:bg-yellow-700 transition duration-300 ease-in-out">Order Now</a>
         </div>
     </div>
-</div>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ระบบจัดการร้านเบเกอรี่</title>
+        <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}">
+    </head>
+
+    <style>
+        /* หากคุณต้องการใส่ CSS เพิ่มเติมที่ไม่สามารถทำได้ด้วย Tailwind */
+        .custom-hero {
+            background-image: url("{% static 'images/hero-background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+    
+    <!-- ตัวอย่างการใช้ Tailwind CSS สำหรับ navbar
+    <nav class="navbar bg-yellow-300 p-6 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-yellow-900">ระบบจัดการร้านเบเกอรี่</h1>
+            <div class="nav-links flex space-x-6">
+                <a href="#" class="text-yellow-900 hover:text-yellow-700 transition duration-200">Home</a>
+                <a href="#" class="text-yellow-900 hover:text-yellow-700 transition duration-200">Add Product</a>
+                <a href="#" class="text-yellow-900 hover:text-yellow-700 transition duration-200">Products</a>
+                <a href="#" class="text-yellow-900 hover:text-yellow-700 transition duration-200">Admin Orders</a>
+            </div>
+        </div>
+    </nav> -->
+
+
+
+<!--body>
+
+    <div class="navbar">
+        <h1>ระบบจัดการร้านเบเกอรี่</h1>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Add Product</a>
+            <a href="#">Products</a>
+            <a href="#">Admin Orders</a>
+        </div>
+    </div>
+
+    <div class="hero-section">
+        <h1>Welcome to the Bakery!</h1>
+        <img src="{% static 'images/bakery-hero.jpg' %}" alt="Bakery Image">
+        <a href="#" class="order-now">Order Now</a>
+    </div>
+
+</body-->
+</html>
 {% endblock %}
