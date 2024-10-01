@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}รายการสินค้าเบเกอรี่{% endblock %}
+{% block title %}Shoe product list{% endblock %}
 
 {% block content %}
 
@@ -9,12 +9,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>รายงานยอดขาย</title>
+    <title>Sales report</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mx-auto mt-10">
-        <h1 class="text-center text-4xl font-bold">รายงานยอดขาย</h1>
+        <h1 class="text-center text-4xl font-bold">Sales report</h1>
         <canvas id="salesChart" class="bg-white p-4 rounded-lg shadow-lg"></canvas>
     </div>
 
@@ -26,7 +26,7 @@
             data: {
                 labels: {{ labels|safe }},
                 datasets: [{
-                    label: 'ยอดขาย',
+                    label: 'Sales',
                     data: {{ data|safe }},
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
                     borderColor: 'rgba(75, 192, 192, 1)',

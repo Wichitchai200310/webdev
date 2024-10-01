@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}รายการสินค้าเบเกอรี่{% endblock %}
+{% block title %}Shoe product list{% endblock %}
 
 {% block content %}
 <div class="container mx-auto mt-10">
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-10">รายการสินค้าเบเกอรี่</h1>
+    <h1 class="text-4xl font-bold text-center text-white mb-10">Shoe product list</h1>
 
     <div class="overflow-x-auto">
         <!-- Table container -->
@@ -31,7 +31,7 @@
                         {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-16 w-16 object-cover rounded-lg shadow-md mx-auto border-2 border-gray-300">
                         {% else %}
-                        <span class="text-gray-500 italic">ไม่มีรูปภาพ</span>
+                        <span class="text-gray-500 italic">No pictures</span>
                         {% endif %}
                     </td>
                     <td class="py-4 px-6 text-center">{{ product.description }}</td>

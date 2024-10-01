@@ -2,7 +2,7 @@
 
 {% extends 'base.html' %}
 
-{% block title %}ลบสินค้า{% endblock %}
+{% block title %}Delete product{% endblock %}
 
 {% block content %}
 <div class="container mx-auto mt-20">
@@ -10,10 +10,10 @@
     <div class="max-w-lg mx-auto bg-gradient-to-r from-red-400 via-red-500 to-red-400 p-1 rounded-lg shadow-2xl">
         <!-- Inner container with white background and padding -->
         <div class="bg-white rounded-lg p-8">
-            <h1 class="text-4xl font-extrabold text-center text-red-600 mb-8">ลบสินค้า</h1>
+            <h1 class="text-4xl font-extrabold text-center text-red-600 mb-8">Delete product</h1>
             
             <p class="text-center text-gray-700 mb-6">
-                คุณแน่ใจหรือไม่ที่จะลบสินค้านี้: 
+                Are you sure to delete this product?: 
                 <strong class="text-red-500">{{ product.name }}</strong>?
             </p>
             
@@ -31,13 +31,13 @@
                 <form method="POST">
                     {% csrf_token %}
                     <button type="submit" class="bg-red-500 hover:bg-red-600 focus:ring-4 focus:ring-red-300 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                        ลบ
+                        Delete
                     </button>
                 </form>
 
                 <!-- Cancel button -->
                 <a href="{% url 'product_list' %}" class="bg-gray-500 hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                    ยกเลิก
+                    Cancel
                 </a>
             </div>
         </div>

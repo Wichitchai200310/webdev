@@ -4,38 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if product %}แก้ไขสินค้า{% else %}เพิ่มสินค้าใหม่{% endif %}</title>
+    <title>{% if product %}Edit product{% else %}Add new products{% endif %}</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen flex items-center justify-center">
     <div class="container mx-auto">
-        <h1 class="text-5xl font-extrabold text-center text-gray-800 mb-8">{% if product %}แก้ไขสินค้า{% else %}เพิ่มสินค้าใหม่{% endif %}</h1>
+        <h1 class="text-5xl font-extrabold text-center text-gray-800 mb-8">{% if product %}Edit product{% else %}Add new products{% endif %}</h1>
         <div class="w-full max-w-lg mx-auto bg-white shadow-xl rounded-xl p-10 space-y-6">
             <form method="POST" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
                 <div>
-                    <label for="name" class="block text-gray-700 font-semibold">ชื่อสินค้า</label>
+                    <label for="name" class="block text-gray-700 font-semibold">Product name</label>
                     <input type="text" name="name" id="name" class="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกชื่อสินค้า" value="{{ product.name|default_if_none:'' }}">
                 </div>
 
                 <div>
-                    <label for="category" class="block text-gray-700 font-semibold">ประเภท</label>
+                    <label for="category" class="block text-gray-700 font-semibold">Type</label>
                     <input type="text" name="category" id="category" class="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกประเภทสินค้า" value="{{ product.category|default_if_none:'' }}">
                 </div>
 
                 <div>
-                    <label for="price" class="block text-gray-700 font-semibold">ราคา</label>
+                    <label for="price" class="block text-gray-700 font-semibold">Price</label>
                     <input type="text" name="price" id="price" class="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกราคา" value="{{ product.price|default_if_none:'' }}">
                 </div>
 
                 <div>
-                    <label for="stock" class="block text-gray-700 font-semibold">จำนวนคงเหลือ</label>
+                    <label for="stock" class="block text-gray-700 font-semibold">Remaining amount</label>
                     <input type="text" name="stock" id="stock" class="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกจำนวนคงเหลือ" value="{{ product.stock|default_if_none:'' }}">
                 </div>
 
                 <div>
-                    <label for="image" class="block text-gray-700 font-semibold">รูปภาพสินค้า</label>
+                    <label for="image" class="block text-gray-700 font-semibold">Product pictures</label>
                     <input type="file" name="image" id="image" class="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }}" class="mt-4 h-32 w-32 object-cover rounded-md">
@@ -43,13 +43,13 @@
                 </div>
 
                 <div>
-                    <label for="description" class="block text-gray-700 font-semibold">คำอธิบายสินค้า</label>
+                    <label for="description" class="block text-gray-700 font-semibold">Product description</label>
                     <textarea name="description" id="description" rows="4" class="w-full p-2 border-2 border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="กรอกคำอธิบายสินค้า">{{ product.description|default_if_none:'' }}</textarea>
                 </div>
 
                 <div class="text-center">
                     <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md shadow-md">
-                        {% if product %}บันทึกการแก้ไข{% else %}เพิ่มสินค้า{% endif %}
+                        {% if product %}Save the edits.{% else %}Add product{% endif %}
                     </button>
                 </div>
             </form>
